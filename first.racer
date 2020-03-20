@@ -1,0 +1,53 @@
+;;; Supply the signature for this knowledge base
+(signature
+	:atomic-concepts (Person Male Female Plan WeekPlan Day Monday DayPlan Tuesday Wendsday Thursday Friday Saturday Sunday Workout UpperBodyWorkout LowerBodyWorkout
+						Exercise Body Muscle UpperBody LowerBody)
+	:roles (
+		(consists_of :domain Plan)
+		(is_made_of :transitive t :inverse is_part_of)
+		(is_part_of)
+		(trained_by :inverse trains)
+		(afects :domain (or UpperBodyWorkout LowerBodyWorkout))
+		(trains)
+		(involves :domain (or UpperBody LowerBody))
+		(recomended_plan :domain Plan)
+		)
+)
+
+;;; Domain & range restrictions for roles
+
+(equivalent Body (or UpperBody LowerBody))
+(implies WeekPlan Plan)
+(implies DayPlan Plan)
+(implies Male Person)
+(implies Female Person)
+(implies UpperBodyWorkout Workout)
+(implies LowerBodyWorkout Workout)
+(implies Workout (some is_made_of Exercise))
+(implies UpperBodyWorkout (some afects UpperBody))
+(implies LowerBodyWorkout (some afects LowerBody))
+(disjoint UpperBody LowerBody)
+(implies Exercise (some is_part_of Workout))
+(implies Exercise (some trains Muscle))
+(implies Exercise (some involves (or UpperBody LowerBody)))
+(define-concrete-domain-attribute repetitions :type integer :domain Exercise)
+(implies Muscle (some trained_by Exercise))
+(implies Muscle (some is_part_of (or UpperBody LowerBody)))
+(disjoint Male Female)
+
+(define-concrete-domain-attribute has_age :type integer :domain Person)
+(define-concrete-domain-attribute has_weight :type integer :domain Person)
+(define-concrete-domain-attribute has_height :type integer :domain Person)
+(define-concrete-domain-attribute has_name :type integer :domain Person)
+
+(implies Monday Day)
+(implies Tuesday Day)
+(implies Thursday Day)
+(implies Wendsday Day)
+(implies Friday Day)
+(implies Saturday Day)
+(implies Sunday Day)
+(disjoint Monday Tuesday Wendsday Thursday Friday Saturday Sunday) 
+(implies Person (some recomended_plan Plan))
+(implies DayPlan (and Day (some consists_of Workout)))
+(implies WeekPlan (exactly 7 DayPlan))
