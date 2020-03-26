@@ -1,0 +1,86 @@
+(full-reset)
+(in-knowledge-base planner implement-planner)
+
+;;; Supply the signature for this knowledge base
+(signature
+	:atomic-concepts (Person Male Female Plan WeekPlan Day Monday Tuesday Wendsday Thursday Friday Saturday Sunday Workout
+						UpperBodyWorkout LowerBodyWorkout
+						Exercise Body Muscle UpperBody LowerBody
+						Goal FitStatus Outcome Rule Step
+						Minor Adult Teenager
+						Dificulty)
+						
+	:roles (
+		(consists_of :domain Plan :range Workout)
+		(is_made_of :transitive t :inverse is_part_of :domain Workout :range Exercise)
+		(trained_by :inverse trains :domain Muscle :range Exercise)
+		(involves :domain Exercise :range Body)
+		(recomended_plan :domain Person :range Plan)
+		(scheduled_on :domain Plan :range Day)
+		(has_plans :domain WeekPlan :range Plan)
+		(has_goal :domain Person :range Goal)
+		(has_status :domain Person :range FitStatus :inverse status-of)
+		(has_outcome :domain Exercise :range Outcome)
+		(has_rules :domain Exercise :range Rule)
+		(has_steps :domain Exercise :range Step)
+		(has_dificulty :domain Workout :range Dificulty)
+		)
+	:features (has-gender :inverse inv-has-gender)
+	:attributes ((integer has-age) (integer has_weight) (integer has_height)
+					(string has-name)
+					(integer repetitions)
+                    (integer duration) (integer burns-calories)
+                    (string has-string)
+                )
+	
+	
+)
+
+;;; Domain & range restrictions for roles
+(implies Male Person)
+(implies Female Person)
+(disjoint Male Female)
+
+(implies WeekPlan Plan)
+
+(implies UpperBody Body)
+(implies LowerBody Body)
+(disjoint UpperBody LowerBody)
+
+(implies Monday Day)
+(implies Tuesday Day)
+(implies Thursday Day)
+(implies Wendsday Day)
+(implies Friday Day)
+(implies Saturday Day)
+(implies Sunday Day)
+(disjoint Monday Tuesday Wendsday Thursday Friday Saturday Sunday) 
+
+(implies UpperBodyWorkout Workout)
+(implies LowerBodyWorkout Workout)
+(disjoint UpperBody LowerBody)
+
+(implies Workout (some is_made_of Exercise))
+
+(equivalent Exercise (some is_part_of Workout))
+(equivalent Exercise (some trains Muscle))
+(equivalent Exercise (some involves (or UpperBody LowerBody)))
+
+(implies Muscle (some trained_by Exercise))
+(implies Muscle (some is_part_of (or UpperBody LowerBody)))
+
+(implies Person (some recomended_plan Plan))
+
+(equivalent WeekPlan (at-most 7  has_plans Plan))
+
+(equivalent Minor (and Person (max has-age 18)))
+(equivalent Adult (and Person (min has-age 18)))
+(equivalent Teenager (and Person (min has-age 12)))
+
+(classify-tbox)
+(tbox-coherent?) 
+(tbox-cyclic?)
+(role-subsumes? trains trained_by PLANNER)
+;(taxonomy PLANNER)
+(concept-descendants Workout PLANNER)
+;(get-tbox-signature)
