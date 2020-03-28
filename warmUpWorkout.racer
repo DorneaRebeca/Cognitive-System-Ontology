@@ -1,0 +1,169 @@
+(instance Monday Day)
+(instance Tuesday Day)
+(instance Thursday Day)
+(instance Wendsday Day)
+(instance Friday Day)
+(instance Saturday Day)
+(instance Sunday Day)
+
+(implies Arm UpperBodyComponent)
+(instance forearm (and UpperBodyComponent (some is-component-of Arm)))
+(instance hand (and UpperBodyComponent (some is-component-of Arm)))
+(implies Back UpperBodyComponent)
+(implies Shoulder UpperBodyComponent)
+(implies Hip UpperBodyComponent)
+(implies Neck UpperBodyComponent)
+(implies Abdomen UpperBodyComponent)
+(implies Leg LowerBodyComponent)
+(implies Foot LowerBodyComponent)
+(implies Tight LowerBodyComponent)
+
+
+(instance hamstring (and Muscle (some is-component-of Leg)))
+(instance quadriceps (and Muscle (some is-component-of Tight)))
+(instance calves (and Muscle (some is-component-of Tight)))
+(instance biceps (and Muscle (some is-component-of Arm)))
+(instance triceps (and Muscle (some is-component-of Arm)))
+(instance lats (and Muscle (some is-component-of Hip)))
+(instance trapenzius (and Muscle (some is-component-of Neck)))
+(instance deltoids (and Muscle (some is-component-of Shoulder)))
+(instance abdominals (and Muscle (some is-component-of Abdomen)))
+
+(instance medium Dificulty)
+(instance hard Dificulty)
+(instance easy Dificulty)
+
+(instance r1 (and Rule (string= has-string "Do not hold your Breath")))
+(instance r2 (and Rule (string= has-string "Do not shrug your sholders")))
+(instance r3 (and Rule (string= has-string "Engage your back muscles")))
+(instance r4 (and Rule (string= has-string "Focus on the mucle contraction")))
+
+;pentru REVERSE CRUNCHES 
+ 
+(instance s1 (and Step (string= has-string "Lie on your back")))
+(instance s2 (and Step (string= has-string "Put your knees up at a 90 degree angle and your hands behind your head")))
+(instance s3 (and Step (string= has-string "Lift your upper body and thighs")))
+(instance s4 (and Step (string= has-string "Then strech out")))
+(instance s5 (and Step (string= has-string "Repeat")))
+
+
+;pentru SHOULDER STRETCH 
+
+(instance s6 (and Step (string= has-string "Place one arm across your body , parallel to the ground")))
+(instance s7 (and Step (string= has-string "Then use the other arm to pull the parallel arm toward your chest")))
+(instance s8 (and Step (string= has-string "Hold for a while")))
+(instance s9 (and Step (string= has-string "Switch arms")))
+
+;pentru JUMPING JACKS 
+
+(instance s10 (and Step (string= has-string " Start with your feet together and your arms by your sides")))
+(instance s11 (and Step (string= has-string "Then jump up with your feet apart and your hands overhead")))
+(instance s12 (and Step (string= has-string "Return to the start position")))
+
+(instance strenght Outcome)
+(instance coordination Outcome)
+(instance cool-down Outcome)
+(instance power-increase Outcome)
+(instance flexibility Outcome)
+
+(instance reverse-crunches (and Exercise (equal repetitions 5)))
+(related reverse-crunches s1 has-step)
+(related reverse-crunches s2 has-step)
+(related reverse-crunches s3 has-step)
+(related reverse-crunches s4 has-step)
+(related reverse-crunches s5 has-step)
+(related reverse-crunches r1 has-rule)
+(related reverse-crunches r2 has-rule)
+(related reverse-crunches r4 has-rule)
+(related reverse-crunches cool-down has-outcome)
+(related reverse-crunches strenght has-outcome)
+(related reverse-crunches  trapezius trains)
+(related reverse-crunches  lats  trains)
+(related reverse-crunches abdominal  trains)
+(related reverse-crunches Arm  involves)
+(related reverse-crunches Abdomen  involves)
+
+(instance shoulder-strech (and Exercise (equal repetitions 4)))
+(related shoulder-strech s6 has-step)
+(related shoulder-strech s7 has-step)
+(related shoulder-strech s8 has-step)
+(related shoulder-strech s9 has-step)
+(related shoulder-strech s5 has-step)
+(related shoulder-strech r1 has-rule)
+(related shoulder-strech r2 has-rule)
+(related shoulder-strech cool-down  has-outcome)
+(related shoulder-strech coordination has-outcome)
+(related shoulder-strech  pectoralis trains)
+(related shoulder-strech deltoids trains)
+(related shoulder-strech Shoulder involves)
+(related shoulder-strech Arm involves)
+
+(instance jumping-jacks (and Exercise (equal repetitions 5)))
+(related jumping-jacks s10 has-step)
+(related jumping-jacks s11 has-step)
+(related jumping-jacks s12 has-step)
+(related jumping-jacks s5 has-step)
+(related jumping-jacks r1 has-rule)
+(related jumping-jacks r4 has-rule)
+(related jumping-jacks cool-down has-outcome)
+(related jumping-jacks  strenght has-outcome)
+(related jumping-jacks  triceps  trains)
+(related jumping-jacks calves trains)
+(related jumping-jacks quadriceps trains)
+(related jumping-jacks  biceps trains)
+(related jumping-jacks  Arm involves)
+(related jumping-jacks  Shoulder involves)
+
+(instance jump-rope (and Exercise (equal repetitions 10)))
+(related jump-rope r1 has-rule)
+(related jump-rope r4 has-rule)
+(related jump-rope  coordination has-outcome)
+(related jump-rope  power-increase has-outcome)
+(related jump-rope calves trains)
+(related jump-rope hamstrings trains)
+(related jump-rope  quadriceps  trains)
+(related jump-rope  forearm trains)
+(related jump-rope  Arm involves)
+(related jump-rope  Shoulder involves)
+
+(instance neck-looking-around (and Exercise (equal repetitions 6)))
+(related neck-looking-around r1 has-rule)
+(related neck-looking-around r4 has-rule)
+(related neck-looking-around  cool-down  has-outcome)
+(related neck-looking-around  trapezius trains)
+(related neck-looking-around  Neck involves)
+
+(instance WarmUp (and Workout (and (equal duration 6) (equal burns-calories 137))) )
+(related WarmUp medium has-dificulty)
+(related reverse-crunches is-made-of)
+(related WarmUp shoulder-strech is-made-of)
+(related WarmUp jump-rope is-made-of)
+(related WarmUp jumping-jacks is-made-of)
+(related WarmUp neck-looking-around is-made-of)
+ 
+(instance CircuitTraining Plan)
+(related CircuitTraining WarmUp consists-of)
+(related CircuitTraining Monday scheduled-on)
+
+
+
+(instance WeightLossStarter WeekPlan)
+(related WeightLossStarter CircuitTraining has-plans)
+
+
+(instance lose-weight Goal )
+(instance get-fitter Goal )
+(instance gain-muscle Goal )
+
+(instance fit FitStatus)
+(instance not-fit FitStatus)
+(instance very-fit FitStatus)
+
+
+(instance Rodica (and Female Adult))
+(related Rodica lose-weight has-goal)
+(related Rodica not-fit has-status)
+(related Rodica WeightLossStarter recomended-plan)
+
+
+

@@ -1,0 +1,128 @@
+(full-reset)
+(set-unique-name-assumption t)
+
+(in-knowledge-base planner)
+
+;;; Supply the signature for this knowledge base
+(signature
+	:atomic-concepts (Person Male Female Plan WeekPlan Day  Workout
+						UpperBodyWorkout LowerBodyWorkout
+						Exercise BodyComponent  Muscle UpperBodyComponent  LowerBodyComponent 
+						Goal FitStatus Outcome Rule Step
+						Minor Adult Teenager
+						Back Tight Leg Foot Hip Shoulder Neck 
+						Abdomen Arm
+						Dificulty)
+						
+	:roles (
+		(consists-of :domain Plan :range Workout)
+		(is-made-of :domain Workout :range Exercise)
+		(trained-by :domain Muscle :range Exercise)
+		(trains)
+		(is-component-of :domain BodyComponent :range BodyComponent)
+		(composed-by)		
+		(involves :domain Exercise :range BodyComponent)
+		(recomended-plan :domain Person :range WeekPlan)
+		(scheduled-on :domain Plan :range Day)
+		(has-plans :domain WeekPlan :range Plan)
+		(has-goal :domain Person :range Goal)
+		(has-status :domain Person :range FitStatus)
+		(status-of)
+		(has-outcome :domain Exercise :range Outcome)
+		(has-rule :domain Exercise :range Rule)
+		(has-step :domain Exercise :range Step)
+		(has-dificulty :domain Workout :range Dificulty)
+		NIL
+		)
+	:features (has-gender :inverse inv-has-gender)
+	:attributes ((integer has-age) (integer has-weight) (integer has-height)
+					(string has-name)
+					(integer repetitions)
+                    (integer duration) (integer burns-calories)
+                    (string has-string)
+                )
+				
+	:individuals ( forearm hand 
+					Rodica
+					Monday Tuesday Wendsday Thursday Friday Saturday Sunday
+					hamstring triceps biceps lats abdominals
+					calves trapezius deltoids quadriceps
+					medium hard easy
+					r1 r2 r3 r4 
+					s1 s2 s3 s4 s5 6 s7 s8 s9 s10 s11 s12 
+					strenght coordination cool-down power-increase fexibility
+					reverse-crunches shoulder-strech jumping-jacks jump-rope neck-looking-around
+					CircuitTraining
+					WeightLossStarter
+					WarmUp 
+					fit not-fit very-fit
+					lose-weight get-fitter gain-muscle		 
+				)
+)
+
+; ------------------------------------------------
+; Part 1: Domain & range restrictions for roles
+; ------------------------------------------------
+
+(role-is-transitive is-part-of)
+(role-is-transitive is-composed-of)
+(inverse is-made-of is-part-of)
+(inverse is-component-of composed-by)
+(inverse-of-role trains trained-by)
+(inverse-of-role has-status status-of)
+
+(implies Male Person)
+(implies Female Person)
+(disjoint Male Female)
+
+(implies UpperBodyComponent BodyComponent)
+(implies LowerBodyComponent BodyComponent)
+(disjoint UpperBodyComponent LowerBodyComponent)
+
+
+(implies UpperBodyWorkout Workout)
+(implies LowerBodyWorkout Workout)
+(disjoint UpperBodyComponent LowerBodyComponent)
+
+(implies Workout (some is-made-of Exercise))
+
+(equivalent Exercise (some is-part-of Workout))
+(equivalent Exercise (some trains Muscle))
+(equivalent Exercise (some involves (or UpperBodyComponent LowerBodyComponent)))
+
+(implies Muscle (some trained-by Exercise))
+(implies Muscle (some is-part-of (or UpperBodyComponent LowerBodyComponent)))
+
+(implies Person (some recomended-plan Plan))
+	
+(equivalent WeekPlan (at-most 7  has-plans Plan))
+
+(equivalent Minor (and Person (max has-age 18)))
+(equivalent Adult (and Person (min has-age 18)))
+(equivalent Teenager (and Person (min has-age 12)))
+
+; ------------------------------------------------------------
+; Part 2: Instances
+; ------------------------------------------------------------
+
+(racer-read-file "warmUpWorkout.racer")
+
+
+; ------------------------------------------------------------
+; Part 3: Queries to check incoherence/inconsistency/cycles
+; ------------------------------------------------------------
+
+(classify-tbox)
+(prepare-abox)
+
+(tbox-coherent?) 
+(check-tbox-coherence)
+(tbox-cyclic?)
+(role-subsumes? trains trained-by PLANNER)
+;(taxonomy PLANNER)
+(concept-descendants Workout PLANNER)
+;(get-tbox-signature)
+
+
+(abox-consistent?)
+(check-abox-coherence)
